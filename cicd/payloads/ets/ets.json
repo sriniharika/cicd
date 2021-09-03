@@ -1,0 +1,19 @@
+{
+    "applicationName":"TCOP-GP",
+    "environment":"",
+    "version":"",
+    "requestedDateTimeInUTC":"",
+    "project":"TCOP-GP",
+    "releaseTarget":"",
+    "isAutomatedInstallRequired":"n",
+    "specialInstructions":"Ticket created for TCOP-GP deployment",
+    "nexusURL":"None",
+    "dimensionsDb":"",
+    "dimensionsProject":"",
+    "dimensionsWorkset":"",
+    "dimensionsSmr":"",
+    "requestorCuid":"ab73080",
+    "mailingList":"koteswararao.uppalapati@centurylink.com;Richa.Bhatt@lumen.com; Arun.C@centurylink.com; Deepak.Gupta1@lumen.com; Rohan.Khurana@lumen.com; Ranjeet.Kumar1@centurylink.com; Rakesh.Kuppa@centurylink.com; Sulekha.Sharma@lumen.com; Asha.Sunagar@centurylink.com; Umesh.Vyas@lumen.com; Rohan.Khurana@lumen.com, Niharika.Srivastava@lumen.com",
+    "developmentContact":"umesh.vyas@centurylink.com",
+    "client":"postman"
+ }

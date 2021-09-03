@@ -1,0 +1,54 @@
+FROM nexusprod.corp.intranet:4567/ubuntu:bionic
+LABEL Description="This is a base image, which provides one ANT environment"
+
+ARG user=jenkins
+ARG group=jenkins
+ARG uid=1341
+ARG gid=1341
+RUN getent group ${gid} || groupadd -g ${gid} ${group}
+RUN useradd -c "Jenkins user" -d /home/${user} -u ${uid} -g ${gid} -m ${user}
+
+VOLUME /mvn
+
+ENV DEBIAN_FRONTEND noninteractive
+
+RUN apt-get update && \
+    apt-get install -y apt-utils automake pkg-config libpcre3-dev zlib1g-dev liblzma-dev && \
+    apt-get install -y curl net-tools build-essential software-properties-common bzip2 libbz2-dev git wget unzip vim && \
+    apt-get install -y git xz-utils xvfb libxi6 libgconf-2-4 && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+ENV INSTALL_DIR=${INSTALL_DIR:-/usr}
+
+RUN usermod -a -G root ${user}
+
+RUN mkdir -p /opt && \
+    cd /opt && \
+    curl -k https://nexusprod.corp.intranet:8443/repository/CTLRaw/legacy_jdk/jdk-6u45-linux-x64.bin --output jdk-6u45-linux-x64.bin && \  
+    curl -k https://archive.apache.org/dist/ant/binaries/apache-ant-1.9.16-bin.tar.gz --output apache-ant-1.9.16-bin.tar.gz && \
+    chmod +x ./jdk-6u45-linux-x64.bin && \
+    ./jdk-6u45-linux-x64.bin && \
+    tar -xvf apache-ant-1.9.16-bin.tar.gz && \
+    rm -rf jdk-6u45-linux-x64.bin && \
+    rm -rf apache-ant-1.9.16-bin.tar.gz
+
+RUN update-alternatives --install "/usr/bin/java" "java" "/opt/jdk1.6.0_45/bin/java" 1
+
+ENV JAVA_HOME=/opt/jdk1.6.0_45
+ENV ANT_HOME=/opt/apache-ant-1.9.16
+
+
+ARG MAVEN_VERSION=${MAVEN_VERSION:-3.2.5}
+ENV MAVEN_VERSION=${MAVEN_VERSION}
+ENV MAVEN_HOME=/usr/apache-maven-${MAVEN_VERSION}
+ENV PATH=${PATH}:${MAVEN_HOME}/bin
+RUN curl -sL http://archive.apache.org/dist/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz \
+  | gunzip \
+  | tar x -C /usr/ \
+  && ln -s ${MAVEN_HOME} /usr/maven
+
+ENV PATH=${PATH}:${JAVA_HOME}/bin:${ANT_HOME}/bin:/usr/bin
+RUN java -version
+RUN ant -version
+RUN mvn -version
